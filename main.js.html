@@ -1,0 +1,90 @@
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script>
+  var view = new Vue({
+  el: '#app',
+
+  data: {
+    isFormVisible: false, // フォームの表示状態
+    name: '',         
+    destination: '',  
+    returnTime: '09:00',  
+    returnDate: '',  
+    remarks: '',  
+    date: '',         
+    table_data: null,   
+    today: '',     
+    isSearchMode: false, 
+    searchName: '',  // 検索用の名前を保持するデータを追加
+    businessTripDate: ''
+  },
+
+  mounted: function() {
+    google.script.run.withSuccessHandler(function(date) {
+      view.today = date;
+      view.returnDate = date;
+      view.businessTripDate = date; // デフォルトで今日の日付を設定
+    }).getFormattedDate();
+    this.reloadData();
+  },
+    
+  methods: {
+    toggleForm: function() {
+      this.isFormVisible = !this.isFormVisible;
+      this.$nextTick(() => {
+        const formContainer = document.querySelector('.form-container');
+        if (this.isFormVisible) {
+          formContainer.classList.add('active');
+        } else {
+          formContainer.classList.remove('active');
+        }
+      });
+    },
+
+    addData: function() {
+      if (this.name.trim() === '' || this.destination.trim() === '') {
+        alert('名前と行き先を入力してください。');
+        return;
+      }
+      google.script.run.withSuccessHandler(function(return_data) {
+        view.table_data = return_data;
+        view.isSearchMode = false;
+
+         // フォームをクリアし、折りたたむ
+          view.name = '';  
+          view.destination = '';
+          view.businessTripDate = view.today; 
+          view.returnDate = view.today; 
+          view.returnTime = '09:00';  
+          view.remarks = '';
+          view.isFormVisible = false;
+      }).addSheetData(this.name, this.destination, this.businessTripDate, this.returnTime, this.returnDate, this.remarks);
+    },
+
+    reloadData: function() {
+      google.script.run.withSuccessHandler(
+        function(return_data) {
+          view.table_data = return_data;
+          view.isSearchMode = false;
+        }
+      ).getSheetData();
+    },
+
+    deleteData: function(index) {
+      google.script.run.withSuccessHandler(
+        function(return_data) {
+          view.table_data = return_data;
+        }
+      ).deleteRow(index); 
+    },
+
+    searchData: function() {
+      google.script.run.withSuccessHandler(
+        function(return_data) {
+          view.table_data = return_data;  
+          view.isSearchMode = true;
+        }
+      ).searchByName(this.searchName);
+    }
+  }
+})
+</script>

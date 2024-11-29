@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* 全体のスタイル */
+    #app {
+      padding: 20px;
+    }
+
+    body {
+      font-family:"Hiragino Sans","Meiryo","Yu Gothic";
+    }
+
+    .tile-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .tile {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tile nametag {
+      color: #010079;
+      text-shadow: 0 0 5px white;
+    }
+
+    .tile button {
+      background-color: #010079;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      float: right;
+    }
+
+    .tile button:hover {
+      color: white;
+      background-color: #d32b15;
+      transition: 0.2s ease-in-out;
+    }
+
+    nametag {
+      font-size: 24px;
+      color: #010079;
+      text-shadow: 0 0 5px white;
+      border-left: solid 7px #010079;
+      padding-left: 8px;
+    }
+
+    rocate {
+      font-size: 20px;
+      margin: 5px:
+    }
+
+    remarks {
+      font-size: 15px;
+    }
+
+    mini {
+      font-size: 12px;
+      color: #808080;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .search-container input[type="text"] {
+      width: 50%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    .search-container input[type="text"]:focus {
+      border-color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .search-container button {
+      width: 23%;
+      padding: 10px;
+      background-color: #010079;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      margin-left: 2%;
+    }
+
+    #serch_btn {
+      height: 40px;
+      width: 10%;
+      min-width:55px;
+      margin: 0;
+      background-color: #010079;
+      border-radius: 0 5px 5px 0;
+    }
+
+    #serch_btn:hover {
+      background-color: #0056b3;
+      transition: 0.2s ease-in-out;
+    }
+
+    .search-container button:hover {
+      background-color: #0056b3;
+      transition: 0.2s ease-in-out;
+    }
+
+    .form-container {
+      max-width: 400px;
+      margin: auto;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+      display: none;
+    }
+
+    .form-container.active {
+      opacity: 1;
+      transform: translateY(0);
+      display: block;
+    }
+
+    .close-btn-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      color: #d32b15;
+      background-color:#edcece;
+      font-size: 15px;
+      padding: 5px 10px;
+      border:none;
+      box-shadow:none;
+    }
+
+    .close-btn:hover {
+      color: white;
+      background-color: #d32b15;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="time"], input[type="date"], select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background-color: #fff;
+    }
+
+    input[type="text"]:focus, input[type="time"]:focus, input[type="date"]:focus, select:focus {
+      border-color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 12px;
+    }
+
+    .btn-primary, .btn-secondary {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #010079;
+      color: white;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      transition: 0.2s ease-in-out;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      transition: 0.2s ease-in-out;
+    }
+
+    /* レスポンシブデザイン */
+    @media (max-width: 1000px) {
+      .tile-container {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 782px) {
+      .tile-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .search-container input[type="text"] {
+        width: 60%;
+      }
+
+      .search-container button {
+        width: 30%;
+      }
+    }
+
+    @media (max-width: 613px) {
+      .tile-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="search-container">
+      <input type="text" v-model="searchName" placeholder="名前を入力">
+      <button v-on:click="searchData" id="serch_btn">検索</button>     
+      <button v-on:click="toggleForm" id="submit_btn">新規登録</button>
+      <button v-on:click="reloadData" id="reroad_btn">画面更新</button>
+    </div>
+
+    <!-- 入力フォーム -->
+    <div v-if="isFormVisible" class="form-container">
+      <div class="close-btn-container">
+        <button v-on:click="toggleForm" class="close-btn">✕</button>
+      </div>
+
+      <label for="name">名前</label>
+      <input type="text" v-model="name" id="name" required><br/>
+
+      <label for="destination">行き先</label>
+      <input type="text" v-model="destination" id="destination" required><br/>
+
+      <label for="businessTripDate">出張予定日</label>
+      <input type="date" v-model="businessTripDate" :min="today"><br/>
+
+      <label for="returnDate">帰社予定日</label>
+      <input type="date" v-model="returnDate" :min="today"><br/>
+
+
+  <label for="returnTime">帰社予定時刻</label>
+      <select id="date" v-model="returnTime" name="time" class="form-control">
+          <option value="09:00">09:00</option> 
+          <option value="09:30">09:30</option> 
+          <option value="10:00">10:00</option> 
+          <option value="10:30">10:30</option> 
+          <option value="11:00">11:00</option> 
+          <option value="11:30">11:30</option> 
+          <option value="12:00">12:00</option> 
+          <option value="12:30">12:30</option> 
+          <option value="13:00">13:00</option> 
+          <option value="13:30">13:30</option> 
+          <option value="14:00">14:00</option> 
+          <option value="14:30">14:30</option> 
+          <option value="15:00">15:00</option> 
+          <option value="15:30">15:30</option> 
+          <option value="16:00">16:00</option> 
+          <option value="16:30">16:30</option> 
+          <option value="17:00">17:00</option> 
+          <option value="17:30">17:30</option> 
+          <option value="18:00">18:00</option> 
+          <option value="18:30">18:30</option> 
+          <option value="19:00">19:00</option> 
+          <option value="19:30">19:30</option>
+        </select><br/>      
+      
+      <label for="remarks">備考</label>
+      <input type="text" v-model="remarks" id="remarks"><br/>
+      
+      <button class="btn-primary" v-on:click="addData">登録</button>
+      <!-- <button class="btn-secondary" v-on:click="reloadData">画面更新</button> -->
+    </div>
+
+    <div class="tile-container">
+      <div v-for="(row_data, index) in table_data" :key="index" class="tile">
+        <td><nametag>{{ row_data[0] }}</nametag><br/>
+          <rocate>▶ {{ row_data[1] }}</rocate><br/>
+          <remarks>備考：{{ row_data[5] }}</remarks><br/>
+          <mini>出張予定日　 | {{ row_data[2] }}<br/>
+          帰社予定日　 | {{ row_data[3] }}<br/>
+          帰社予定時刻 | {{ row_data[4] }}</mini><br/>
+          <td v-if="!isSearchMode"><button v-on:click="deleteData(index)" id="delete_btn">削除</button></td> <!-- 検索モード -->
+      </div>
+    </div>
+  </div>
+  <?!= HtmlService.createHtmlOutputFromFile('main.js').getContent(); ?>
+</body>
+</html>
